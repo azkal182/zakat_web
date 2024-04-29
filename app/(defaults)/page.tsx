@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import React from 'react';
 import { auth } from '@/auth';
-import Users from './users';
 
 export const metadata: Metadata = {
     title: 'Dashboard',
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
 
 async function page() {
     const session = await auth();
-    // console.log(session);
 
     return (
         <div>
@@ -27,12 +25,8 @@ async function page() {
                     <div>{session?.user?.name}</div>
                 </div>
                 <div className="flex items-center justify-between">
-                    <div>Access Token</div>
-                    <div className="max-w-96 truncate">{session?.access_token}</div>
-                </div>
-                <div className="flex items-center justify-between">
-                    <div>Refresh Token</div>
-                    <div className="max-w-96 truncate">{session?.refresh_token}</div>
+                    <div>Role</div>
+                    <div className="max-w-96 truncate">{session?.user?.role}</div>
                 </div>
                 <div className="flex items-center justify-between">
                     <div>Expires</div>
@@ -49,7 +43,6 @@ async function page() {
                 <div>Refresh Token</div>
                 <div className="col-span-2 truncate">{session?.refresh_token}</div> */}
             </div>
-            <Users />
         </div>
     );
 }

@@ -16,35 +16,27 @@ export const {
     callbacks: {
         // @ts-ignore
         async session({ token, session }) {
-            if (session.user) {
+            if (token) {
                 return {
                     ...session,
-                    access_token: token.access_token,
-                    refresh_token: token.refresh_token,
                     user: {
                         id: token.sub,
                         name: token.name,
                         username: token.username,
-                    },
-                };
+                        role: token.role
+                    }
+                }
             }
+
             return session;
         },
         async jwt({ token, user, trigger, session }) {
             if (user) {
-                token.sub = user.id;
-                token.name = user.name;
-                token.username = user.username;
-                token.access_token = user.access_token;
-                token.refresh_token = user.refresh_token;
+                token.username = user.username
+                token.role = user.role
+                token.sub = user.id
             }
 
-            if (trigger === 'update' && session) {
-                if (session.access_token) {
-                    token.access_token = session.access_token;
-                    token.refresh_token = session.refresh_token;
-                }
-            }
             return token;
         },
     },

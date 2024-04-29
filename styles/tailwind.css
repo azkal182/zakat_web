@@ -1,6 +1,12 @@
 /* Animate css */
 @import './animate.css';
 
+/* Select2*/
+@import './select.css';
+
+/* sweetalert css */
+@import './sweetalert.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

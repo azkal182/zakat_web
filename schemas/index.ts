@@ -9,6 +9,7 @@ export const RegisterSchema = z
     .object({
         name: z.string().min(1),
         username: z.string().min(1),
+        role: z.enum(["ADMIN", "USER"]),
         password: z.string().min(4),
         c_password: z.string().min(4),
     })

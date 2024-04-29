@@ -23,7 +23,7 @@ const ComponentsAuthLoginForm = () => {
     });
 
     const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
-        await login(values).then((data) => {
+        login(values).then((data) => {
             setError('');
             if (data?.error) {
                 setError(data.error);

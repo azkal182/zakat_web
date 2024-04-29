@@ -5,11 +5,12 @@ import { Metadata } from 'next';
 import { Nunito } from 'next/font/google';
 import { auth } from '@/auth';
 import { SessionProvider } from 'next-auth/react';
+import 'tippy.js/dist/tippy.css';
 
 export const metadata: Metadata = {
     title: {
-        template: '%s |Tailwind Dashboard Template',
-        default: 'Tailwind Dashboard Template',
+        template: '%s | Zakat',
+        default: 'Zakat',
     },
 };
 const nunito = Nunito({
