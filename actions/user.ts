@@ -60,4 +60,24 @@ const deleteUser = async (id: string) => {
     }
 }
 
-export { registerUser, deleteUser }
+// default password zakat2024
+const resetUserPassword = async (id: string) => {
+    const defaultPassword = await hash('zakat2024', 10)
+    try {
+        const user = await db.user.update({
+            where: {
+                id
+            },
+            data: {
+                password: defaultPassword
+            }
+        })
+        console.log(user);
+
+        return { success: "Password " }
+    } catch (error) {
+        return { error: "Something went wrong! " }
+    }
+}
+
+export { registerUser, deleteUser, resetUserPassword }

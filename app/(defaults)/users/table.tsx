@@ -1,7 +1,9 @@
 'use client';
-import { deleteUser, registerUser } from '@/actions/user';
+import { deleteUser, registerUser, resetUserPassword } from '@/actions/user';
 import Dropdown from '@/components/dropdown';
 import IconCaretDown from '@/components/icon/icon-caret-down';
+import IconLock from '@/components/icon/icon-lock';
+import IconLockDots from '@/components/icon/icon-lock-dots';
 import IconSearch from '@/components/icon/icon-search';
 import IconTrashLines from '@/components/icon/icon-trash-lines';
 import IconX from '@/components/icon/icon-x';
@@ -39,6 +41,46 @@ const TableUsers = ({ users }: { users: any }) => {
             c_password: '',
         },
     });
+
+    const resetPassword = async (user: any) => {
+        Swal.fire({
+            icon: 'warning',
+            title: `Are you sure want to reset password ${user.name} ?`,
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonText: 'Reset',
+            padding: '2em',
+            customClass: 'sweet-alerts',
+        }).then((result) => {
+            if (result.value) {
+                resetUserPassword(user.id).then((data) => {
+                    if (data?.success) {
+                        Swal.fire({ title: 'Reset Password!', text: `${user.name} password has been reseted.`, icon: 'success', customClass: 'sweet-alerts' });
+                    } else {
+                        Swal.fire({ title: 'Reset Password!', text: 'Something went wrong!', icon: 'error', customClass: 'sweet-alerts' });
+                    }
+                });
+            }
+        });
+
+        // resetUserPassword(id).then((data) => {
+        //     if (data?.success) {
+        //         const toast = Swal.mixin({
+        //             toast: true,
+        //             position: 'bottom-start',
+        //             showConfirmButton: false,
+        //             timer: 3000,
+        //             showCloseButton: true,
+        //             customClass: {
+        //                 popup: `color-success`,
+        //             },
+        //         });
+        //         toast.fire({
+        //             title: 'Reset password successfully!',
+        //         });
+        //     }
+        // });
+    };
 
     const showAllert = (id: string) => {
         Swal.fire({
@@ -218,10 +260,15 @@ const TableUsers = ({ users }: { users: any }) => {
                                 <td>{user.name}</td>
                                 <td>{user.username}</td>
                                 <td>{user.role}</td>
-                                <td className="text-center">
+                                <td className="flex items-center space-x-3 text-center">
                                     <Tippy content="Delete">
-                                        <button onClick={() => showAllert(user.id + 1)}>
+                                        <button onClick={() => showAllert(user.id)}>
                                             <IconTrashLines />
+                                        </button>
+                                    </Tippy>
+                                    <Tippy content="Reset Password">
+                                        <button onClick={() => resetPassword(user)}>
+                                            <IconLock />
                                         </button>
                                     </Tippy>
                                 </td>

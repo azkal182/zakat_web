@@ -1,19 +1,60 @@
 'use client';
+import { getAllGroup } from '@/actions/group';
 import Dropdown from '@/components/dropdown';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/form';
 import IconCaretDown from '@/components/icon/icon-caret-down';
 import IconSearch from '@/components/icon/icon-search';
 import IconTrashLines from '@/components/icon/icon-trash-lines';
+import IconX from '@/components/icon/icon-x';
 import IconXCircle from '@/components/icon/icon-x-circle';
+import { CreatePeople } from '@/schemas';
+import { Dialog, Transition } from '@headlessui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Tippy from '@tippyjs/react';
-import React from 'react';
+import _ from 'lodash';
+import React, { Fragment, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import Select from 'react-select';
+import * as z from 'zod';
 
-const PeopleTable = ({ people }: { people: any }) => {
+type FormType = z.infer<typeof CreatePeople>;
+type ReactSelectOption = {
+    value: string | number;
+    label: string;
+};
+
+const PeopleTable = ({ people, groups }: { people: any; groups: any }) => {
+    const [modal, setModal] = useState(false);
+    const form = useForm<FormType>({
+        resolver: zodResolver(CreatePeople),
+        defaultValues: {
+            name: '',
+            description: '',
+            rt: '',
+            group: '',
+        },
+    });
+
+    const optionsGroup: ReactSelectOption = _.map(groups, (item) => ({
+        value: item.name,
+        label: item.name,
+    }));
+    const onSubmit = async (values: any) => {
+        console.log(values);
+
+        // registerUser(values).then((data) => {
+        //     if (data.success) {
+        //         setModal(false);
+        //         reset();
+        //     }
+        // });
+    };
     return (
         <div className="panel">
             <h3 className="mb-3 text-lg font-semibold">Kaum</h3>
             <div className="mb-4.5 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
                 <div className="flex flex-wrap items-center">
-                    <button type="button" className="btn btn-primary m-1 ">
+                    <button onClick={() => setModal(true)} type="button" className="btn btn-primary m-1 ">
                         Add
                     </button>
                     <button type="button" className="btn btn-primary m-1 ">
@@ -125,6 +166,113 @@ const PeopleTable = ({ people }: { people: any }) => {
                     </tbody>
                 </table>
             </div>
+            {/* modal */}
+            <Transition appear show={modal} as={Fragment}>
+                <Dialog as="div" open={modal} onClose={() => setModal(false)}>
+                    <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                        <div className="fixed inset-0" />
+                    </Transition.Child>
+                    <div id="slideIn_down_modal" className="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60">
+                        <div className="flex min-h-screen items-start justify-center px-4">
+                            <Dialog.Panel className="panel animate__animated animate__slideInDown my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                                <div className="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                                    <h5 className="text-lg font-bold">Add User</h5>
+                                    <button onClick={() => setModal(false)} type="button" className="text-white-dark hover:text-dark">
+                                        <IconX />
+                                    </button>
+                                </div>
+                                <div className="p-5">
+                                    <Form {...form}>
+                                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                                            <FormField
+                                                control={form.control}
+                                                name="name"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex">
+                                                        <FormLabel className="w-32 py-2">Username</FormLabel>
+                                                        <div className={`${form.formState.errors.name ? 'has-error' : ''} w-full`}>
+                                                            <FormControl className="">
+                                                                <input {...field} type="text" placeholder="John Doe" className={`form-input w-full text-base`} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="description"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex">
+                                                        <FormLabel className="w-32 py-2">Description</FormLabel>
+                                                        <div className={`${form.formState.errors.description ? 'has-error' : ''} w-full`}>
+                                                            <FormControl className="">
+                                                                <input {...field} type="text" placeholder="John Doe" className={`form-input w-full text-base`} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="rt"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex">
+                                                        <FormLabel className="w-32 py-2">RT</FormLabel>
+                                                        <div className={`${form.formState.errors.rt ? 'has-error' : ''} w-full`}>
+                                                            <FormControl className="">
+                                                                <input {...field} type="text" placeholder="John Doe" className={`form-input w-full text-base`} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                as="select"
+                                                name="group"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex">
+                                                        <FormLabel className="w-32 py-2">Group</FormLabel>
+                                                        <div className={`${form.formState.errors.group ? 'has-error' : ''} w-full`}>
+                                                            <FormControl>
+                                                                {/* <input {...field} type="text" placeholder="John Doe" className={`form-input w-full text-base`} /> */}
+                                                                <div className="custom-select">
+                                                                    <Select
+                                                                        {...field}
+                                                                        classNamePrefix="addl-class"
+                                                                        options={optionsGroup}
+                                                                        value={optionsGroup.find((c: any) => c.value === field.value)}
+                                                                        onChange={(val) => {
+                                                                            field.onChange(val.value);
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <div className="mt-8 flex items-center justify-end">
+                                                <button onClick={() => setModal(false)} type="button" className="btn btn-outline-danger">
+                                                    Discard
+                                                </button>
+                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
+                                                    Save
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </Form>
+                                </div>
+                            </Dialog.Panel>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition>
         </div>
     );
 };

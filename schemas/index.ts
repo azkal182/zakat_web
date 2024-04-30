@@ -17,3 +17,10 @@ export const RegisterSchema = z
         path: ['c_password'],
         message: 'Passwords does not match',
     });
+
+export const CreatePeople = z.object({
+    name: z.string().min(2),
+    description: z.string(),
+    rt: z.string().min(1),
+    group: z.string().min(2)
+})

@@ -12,4 +12,12 @@ const getUserByUsername = async (username: string) => {
         }
     })
 }
-export { getUserByUsername, getAllUser }
+
+const getUserById = async (id: string) => {
+    return db.user.findUnique({
+        where: {
+            id
+        }
+    })
+}
+export { getUserByUsername, getAllUser, getUserById }
